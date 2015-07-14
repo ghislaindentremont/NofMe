@@ -7,6 +7,13 @@ from sys import argv
 
 script, data_type = argv
 
+data_types = ["daily", "workoutA", "workoutB"]
+
+while data_type not in data_types:
+	print "You have not specified an existing data file."
+	print "Please choose from the following: %s, %s, %s" % (data_types[0], data_types[1], data_types[2])
+	data_type = raw_input(">>>")
+
 # this takes my multi-line string and gets rid of all the spaces etc.
 def trim(docstring):
     if not docstring:
@@ -33,11 +40,11 @@ def trim(docstring):
     # Return a single string:
     return '\t'.join(trimmed)
 
-if data_type == "daily":
+if data_type == data_types[0]:
 	# this allows for adding new columns 
 	# ensure that you add corresponding variables
 	# DONT REMOVE HEADERS OR VARIABLES 
-	with open("data", 'r') as file: 
+	with open(data_types[0], 'r') as file: 
 		data = file.readlines()
 		
 		header = """
@@ -65,13 +72,13 @@ if data_type == "daily":
 
 		file.close()
 
-	with open("data", 'w') as file:
+	with open(data_types[0], 'w') as file:
 		file.writelines( data ) 
 
 		file.close()
 
 	# define all variables which will then be added on new line, mostly by prompting user 		
-	print "Is this data for? (True or False)",
+	print "Is this data for today? (True or False)",
 	date_bool = raw_input(">>>") 
 
 	if date_bool == "True": 
@@ -106,7 +113,7 @@ if data_type == "daily":
 	mood = raw_input(">>>")
 	print "How many steps did you take?",
 	steps = raw_input(">>>")
-	print "What was your average coherence?",
+	print "What was your coherence score?",
 	hrv = raw_input(">>>")
 	print "How many times did you vapurize?",
 	nicotine = raw_input(">>>")
@@ -136,24 +143,25 @@ if data_type == "daily":
 		,hrv
 		,nicotine
 		,alcohol
+		,meditate
 		]
 
 
-	f = open("data", "a")
+	f = open(data_types[0], "a")
 	# write variables into file 
 	f.write("\n")
-	for item in variables:
+	for item in variables[:-1]:
 		f.write(item)
 		f.write("\t")
 	# make this last
-	f.write(meditate)
+	f.write(variables[-1])
 	 
 	f.close()
 
 
 
-elif data_type == "workoutA":
-	with open("workoutA", "r") as file:
+elif data_type == data_types[1]:
+	with open(data_types[1], "r") as file:
 		data = file.readlines()
 		
 		header = """
@@ -170,13 +178,13 @@ elif data_type == "workoutA":
 
 		file.close()
 
-	with open("workoutA", "w") as file:
+	with open(data_types[1], "w") as file:
 		file.writelines( data )
 		
 		file.close()	
 
 	# define all variables which will then be added on new line, mostly by prompting user 
-	print "Is this data for? (True or False)",
+	print "Is this data for today? (True or False)",
 	date_bool = raw_input(">>>") 
 
 	if date_bool == "True": 
@@ -208,17 +216,90 @@ elif data_type == "workoutA":
 		,shoulder_press_weight	
 		,shoulder_press_rep
 		,bicep_curl_weight
+		,bicep_curl_rep
 		]
 
-	f = open("workoutA", "a")
+	f = open(data_types[1], "a")
 	# write variables into file 
 	f.write("\n")
-	for item in variables:
+	for item in variables[:-1]:
 		f.write(item)
 		f.write("\t")
 	# make this last
-	f.write(bicep_curl_rep)
+	f.write(variables[-1])
 
 	f.close()
+
+
+
+elif data_type == data_types[2]:
+	with open(data_types[2], "r") as file:
+		data = file.readlines()
+		
+		header = """
+		Date
+		Chest_press_weight
+		Chest_press_rep
+		Leg_press_weight
+		Leg_press_rep
+		Tricep_extention_weight
+		Tricep_extention_rep
+		"""
+
+		data[0] = trim(header) + "\n"
+
+		file.close()
+
+	with open(data_types[2], "w") as file:
+		file.writelines( data )
+		
+		file.close()	
+
+	# define all variables which will then be added on new line, mostly by prompting user 
+	print "Is this data for today? (True or False)",
+	date_bool = raw_input(">>>") 
+
+	if date_bool == "True": 
+		date = time.strftime("%d/%m/%Y")
+	else:
+		print "Ok, then what is the date of the data? (dd/mm/yyyy)",
+		date = raw_input(">>>")	
+
+	print "How much weight did you lift for your chest press?"
+	chest_press_weight = raw_input(">>>")
+	print "How many reps did you complete for your chest press?"
+	chest_press_rep = raw_input(">>>")
+	print "How much weight did you lift for your leg press?"
+	leg_press_weight = raw_input(">>>")
+	print "How many reps did you complete for your leg press?"
+	leg_press_rep = raw_input(">>>")	
+	print "How much weight did you lift for your tricep extention?"
+	tricep_extention_weight = raw_input(">>>")
+	print "How many reps did you complete for your tricep extention?"
+	tricep_extention_rep = raw_input(">>>")	
+
+	# make list of variables
+	variables = [
+		date
+		,chest_press_weight
+		,chest_press_rep
+		,leg_press_weight
+		,leg_press_rep
+		,tricep_extention_weight	
+		,tricep_rep
+		]
+
+	f = open(data_types[2], "a")
+	# write variables into file 
+	f.write("\n")
+	for item in variables[:-1]:
+		f.write(item)
+		f.write("\t")
+	# make this last
+	f.write(variables[-1])
+
+	f.close()
+
+
 
 
