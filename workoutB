@@ -1,5 +1,7 @@
-Date	Chest_press_weight	Chest_press_rep	Leg_press_weight	Leg_press_rep
+Date	Chest_press_weight	Chest_press_rep	Leg_press_weight	Leg_press_rep	Tricep_extention_weight	Tricep_extention_rep
 17/06/2015	70	10	310	7
 25/06/2015	90	9	290	8
 03/07/2015	90	7	NA	NA
 08/07/2015	80	11	NA	NA
+16/07/2015	80	11	250	10	40	15
+23/07/2015	80	11	NA	NA	NA	NA

@@ -11,11 +11,15 @@ script, data_type = argv
 # create list of plausible arguments 
 data_types = ["daily", "workoutA", "workoutB"]
 
+# define other variables that you might reuse 
+pythonic_prompt = ">>>"
+bools = ["True", "False"]
+
 # as long as argument given is not in list, keep asking for new argument
 while data_type not in data_types:
 	print "You have not specified an existing data file."
 	print "Please choose from the following: %s, %s, %s" % (data_types[0], data_types[1], data_types[2])
-	data_type = raw_input(">>>")
+	data_type = raw_input(pythonic_prompt)
 
 # get index of argument - this is the IMPORTANT variable and it is therefore important to maintain the same order of 'data types' between 'headers' and 'variables'
 data_type_index = data_types.index(data_type)
@@ -40,6 +44,7 @@ HRV
 Nicotine
 Alcohol
 Meditate
+Exercise 
 """
 
 header_workoutA = """
@@ -86,7 +91,8 @@ question_daily = [
 ,"What was your coherence score?"
 ,"How many times did you vapurize?"
 ,"How many drinks did you consume?"
-,"How long did you meditate for today (in mins.)?" 
+,"How long did you meditate for (in mins.)?" 
+,"Excluding metabolic conitioning, how long did you exercise for?"
 ]
 
 question_workoutA = [
@@ -143,72 +149,44 @@ def trim(docstring):
 
 # this asks user to specify the date if it is not today's, otherwise it does so automatically 
 def what_date():
-	global date
-
-	date_bool = "hey" 
-	bools = ["True", "False"]
+	date_bool = None  
 	
 	while date_bool not in  bools: 
 		print "Is this data for today? (True or False)",
-		date_bool = raw_input(">>>") 
+		date_bool = raw_input(pythonic_prompt) 
 
 		if date_bool == "True": 
 			date = time.strftime("%d/%m/%Y")
 		elif date_bool == "False":
 			print "Ok, then what is the date of the data? (dd/mm/yyyy)",
-			date = raw_input(">>>")
+			date = raw_input(pythonic_prompt)
+
+	return date
 
 # cycle through questions and get answers, storing them in list 
 # if BACK is entered for question n, ask question n - 1 again 
 def get_answers():
-	global answers 
-	answers = []
-	
-#	for question in questions[data_type_index]:
-#		if "BACK" not in answers:
-#			temp = raw_input(">>> %s" % question)
-#			index = questions[data_type_index].index(question)
-#			answers[index] = temp
-#		else:
-#			index = questions[data_type_index].index(question) - 1
-#			last_question = questions[data_type_index][index]
-#			temp = raw_input(">>> %s" % last_question)
+	range_plus = range( len(questions[data_type_index]) + 2) 
 
-	for index in range(len(questions[data_type_index])):
-		if index > 0:
-			if answers[index - 1] == "BACK":
-				question = questions[data_type_index][index - 2]
-				temp = raw_input(">>> %s" % question)	
-				answers[-2] = temp
+	answers = [j for j in range_plus[:-2]]
 
-				question = questions[data_type_index][index - 1]
-				temp = raw_input(">>> %s" % question)	
-				answers[-1] = temp
-
-		question = questions[data_type_index][index]
-		temp = raw_input(">>> %s" % question)
-		answers.append(temp)
-	
-	if answers[-1] == "BACK":
-		question = questions[data_type_index][-2]
-		temp = raw_input(">>> %s" % question)	
-		answers[-2] = temp
-
-		question = questions[data_type_index][-1]
-		temp = raw_input(">>> %s" % question)	
-		answers[-1] = temp	
-
-	happy = "hey"
-	bools = ["True", "False"]
-
-	while happy not in bools: 
-		happy = raw_input(">>> Was your last entry proper? (True or False)")
-		if happy == "True":
-			pass
-		elif happy == "False":
-			question = questions[data_type_index][-1]
-			temp = raw_input(">>> %s" % question)	
-			answers[-1] = temp
+	index = 0
+	while index < range_plus[-1]:
+		if index == range_plus[-2]:
+			temp = raw_input("Type BACK if you want to correct previous entry, o.w. type anything else." + pythonic_prompt )
+			if temp == "BACK":
+				index -= 1
+			else:
+				index += 1
+		else: 
+			question = questions[data_type_index][index]
+			temp = raw_input(question + pythonic_prompt)
+			if temp == "BACK":
+				index -= 1
+			else:
+				answers[index] = temp
+				index += 1
+	return(answers)
 
 # change header if needed, prompt user, append to file 
 def prompt(data_type_index):
@@ -226,9 +204,9 @@ def prompt(data_type_index):
 
 		file.close()
 
-	what_date()
+	date = what_date()
 
-	get_answers()
+	answers = get_answers()
 
 	f = open(data_types[data_type_index], "a")
 	
