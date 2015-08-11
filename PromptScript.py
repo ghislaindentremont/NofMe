@@ -157,10 +157,13 @@ def what_date():
 
 		if date_bool == "True": 
 			date = time.strftime("%d/%m/%Y")
+
 		elif date_bool == "False":
 			print "Ok, then what is the date of the data? (dd/mm/yyyy)",
 			date = raw_input(pythonic_prompt)
 
+		else:
+			print "Try again."		
 	return date
 
 # cycle through questions and get answers, storing them in list 
@@ -178,6 +181,7 @@ def get_answers():
 				index -= 1
 			else:
 				index += 1
+
 		else: 
 			question = questions[data_type_index][index]
 			temp = raw_input(question + pythonic_prompt)

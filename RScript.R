@@ -5,11 +5,10 @@ library(ggplot2)
 library(scales)
 library(reshape)
 
-setwd("~/NofMe/Daily")
+setwd("~/GitHub/NofMe")
 list.files()
-
 dat = read.table(
-  "data"
+  "daily"
   ,header = TRUE
   ,sep ="\t"
   ,as.is = TRUE
@@ -60,3 +59,5 @@ ggplot(dat2, aes(Date,value))+
 #      labs(title = nm[i])
 #  )
 #}
+
+# look for correlations, so aggregate first
